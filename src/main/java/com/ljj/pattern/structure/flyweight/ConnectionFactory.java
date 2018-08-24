@@ -16,15 +16,15 @@ package com.ljj.pattern.structure.flyweight;
  * Date			2018-08-24 17:13
  * 
  */
-public class ElementFactory {
+public class ConnectionFactory {
     
     /**
      * 
      * @param name
      * @return
      */
-    public Element create(String name) {
-        return new Element(name);   
+    public Connection create(String username, String password, String url) {
+        return new Connection(username, password, url);   
     }
     
 }

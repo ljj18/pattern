@@ -6,6 +6,13 @@
 
 package com.ljj.pattern.structure.flyweight;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
 /**
  * 享元模式的主要目的是实现对象的共享，即共享池，当系统中对象多的时候可以减少内存的开销，通常与工厂模式一起使用
  * 
@@ -16,25 +23,76 @@ package com.ljj.pattern.structure.flyweight;
  * Date 2018-08-24 17:28
  * 
  */
-public class Flyweight {
+public class Flyweight implements MethodInterceptor {
 
-    public void flyweight() {
-        ElementPool pool = new ElementPool(10);
-        Element root = pool.get("root");
-        Element page = pool.get("page");
-        root.add(page);
-        Element columnA = pool.get("columnA");
-        page.add(columnA);
-        Element columnB = pool.get("columnB");
-        page.add(columnB);
-        Element para = pool.get("para");
-        columnB.add(para);
-        System.out.println(root);
-        
-        pool.free(root);
-        pool.free(page);
-        pool.free(columnA);
-        pool.free(columnB);
-        pool.free(para);
+    /**
+     * 
+     */
+    private ConnectionPool pool;
+    
+    /**
+     * 
+     */
+    private UserDao userDao;
+    
+    /**
+     * 
+     */
+    private ExecutorService executor;
+    
+    /**
+     * 
+     */
+    public Flyweight() {
+         pool = new ConnectionPool(10);
+         userDao = new UserDao();
+         executor = Executors.newFixedThreadPool(5);
     }
+    
+    /**
+     * 
+     */
+    public void flyweight() {
+        
+        final UserDao proxyUserDao = (UserDao)CglibProxyFactory.getCglibProxyInstance(userDao, this);
+        executor.execute(() -> {
+            Connection conn = getConnection();
+            proxyUserDao.saveUser(conn);
+            free(conn);
+        });
+        executor.execute(() -> {
+            Connection conn = getConnection();
+            proxyUserDao.saveUser(conn);
+            free(conn);
+        });
+        executor.execute(() -> {
+            Connection conn = getConnection();
+            proxyUserDao.saveUser(conn);
+            free(conn);
+        });
+        executor.execute(() -> {
+            Connection conn = getConnection();
+            proxyUserDao.saveUser(conn);
+            free(conn);
+        });
+        executor.execute(() -> {
+            Connection conn = getConnection();
+            proxyUserDao.saveUser(conn);
+            free(conn);
+        });
+    }
+    
+    @ Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        return null;
+    }
+    
+    private Connection getConnection() {
+        return pool.get();
+    }
+    
+    private void free(Connection conn) {
+        pool.free(conn);
+    }
+
 }
