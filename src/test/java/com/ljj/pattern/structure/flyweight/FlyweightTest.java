@@ -6,6 +6,7 @@
 
 package com.ljj.pattern.structure.flyweight;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.ljj.pattern.BaseCase;
@@ -22,6 +23,11 @@ import com.ljj.pattern.BaseCase;
  */
 public class FlyweightTest extends BaseCase {
 
+    @ After
+    public void tearDown() throws Exception {
+    	Thread.sleep(500);
+        System.out.println();
+    }
     @Test
     public void testFlyweight() {
         Flyweight flyweight = new Flyweight();

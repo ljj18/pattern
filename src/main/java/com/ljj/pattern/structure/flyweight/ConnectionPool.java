@@ -6,7 +6,8 @@
 
 package com.ljj.pattern.structure.flyweight;
 
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class ConnectionPool {
 
-    ConcurrentSkipListSet<Connection> pool = new ConcurrentSkipListSet<Connection>(); 
+    List<Connection> pool = new ArrayList<Connection>(); 
     
     ConnectionFactory viewFactory = new ConnectionFactory();
     
@@ -40,7 +41,7 @@ public class ConnectionPool {
         /*
          * 此处要做很多事情
          */
-        Connection elem =  pool.pollFirst();
+        Connection elem =  pool.remove(0);
         return elem;
     }
     
